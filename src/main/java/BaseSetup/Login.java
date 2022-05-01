@@ -16,7 +16,7 @@ public class Login {
         System.setProperty("webdriver.chrome.driver","/Volumes/Macintosh HD/For Mac/java text and soft file and java IDE/Intellij java project/Drivers/chromedriver");
 
          driver = new ChromeDriver();
-        driver.get("https://opensource-demo.orangehrmlive.com/");
+        driver.navigate().to("https://opensource-demo.orangehrmlive.com/");
 
         driver.findElement(By.xpath("//*[@id='txtUsername']")).sendKeys("nn");
 
