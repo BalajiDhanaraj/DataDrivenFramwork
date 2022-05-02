@@ -7,8 +7,7 @@ import org.apache.poi.ss.usermodel.Workbook;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.chrome.ChromeDriver;
-import org.testng.annotations.DataProvider;
-import org.testng.annotations.Test;
+import org.testng.annotations.*;
 import org.apache.poi.xssf.usermodel.XSSFSheet;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import java.io.FileInputStream;
@@ -20,32 +19,19 @@ import java.util.List;
 public class ReadExcel {
 
         public static WebDriver driver;
-        List<String> usernamelist = new ArrayList<String>();
-        List<String> passwordlist = new ArrayList<String>();
+       static List<String> usernamelist = new ArrayList<String>();
+       static List<String> passwordlist = new ArrayList<String>();
 
-        public String[][] data = {
-                {"Admin1","admin"},
-                {"Admin1","admin2"},
-                {"Admin1","admin3"}
-        };
-
-        @DataProvider(name = "loginData")
-        public Object[][] LoginDataProvider(){
-            return data;
-        }
-
-        @Test(dataProvider ="loginData")
-        public void Login(String uname,String pass){
+       @BeforeSuite
+        public void invoke(){
             System.setProperty("webdriver.chrome.driver","/Volumes/Macintosh HD/For Mac/java text and soft file and java IDE/Intellij java project/Drivers/chromedriver");
 
             driver = new ChromeDriver();
             driver.navigate().to("https://opensource-demo.orangehrmlive.com/");
 
-            driver.findElement(By.xpath("//*[@id='txtUsername']")).sendKeys(uname);
-
-            driver.findElement(By.xpath("//*[@id='txtPassword']")).sendKeys(pass);
         }
 
+        @BeforeTest
         public void readExcel() throws IOException {
             FileInputStream excel = new FileInputStream("/Volumes/Macintosh HD/For Mac/java text and soft file and java IDE/Intellij java project/DataDrivenFramwork/exceldata.xlsx");
 
@@ -67,17 +53,40 @@ public class ReadExcel {
                     }else {
                         passwordlist.add(columnIterator.next().getStringCellValue());
                     }
-
+                    i++;
                 }
-
-
-
-
-
             }
-
-
         }
+
+
+       public void Login(String uname,String pass){
+
+        driver.findElement(By.xpath("//*[@id='txtUsername']")).sendKeys(uname);
+
+        driver.findElement(By.xpath("//*[@id='txtPassword']")).sendKeys(pass);
+      }
+
+        @Test
+        public void executeTest(){
+            for (int i=0;i<usernamelist.size();i++){
+                Login(usernamelist.get(i),passwordlist.get(i));
+            }
+        }
+
+        @AfterSuite
+        public void close(){
+           driver.quit();
+        }
+
+
+
+      /*  public static void main(String[] args) throws IOException {
+            ReadExcel readExcel = new ReadExcel();
+            readExcel.readExcel();
+            readExcel.executeTest();
+            System.out.println("username"+usernamelist);
+            System.out.println("passord"+passwordlist);
+        }*/
 
     }
 
